@@ -265,8 +265,6 @@ You can modify these settings by editing the `DEFAULT_SETTINGS` dictionary in `c
 
 ## Troubleshooting
 
-## Troubleshooting
-
 ### For Executable Version
 
 **"Windows protected your PC" message:**
@@ -371,5 +369,6 @@ If you encounter issues:
 3. Modify source code as needed
 
 **Built with ❤️ using Python, tkinter, yt-dlp, and PyInstaller**
-#   Y o u t u b e - V i d e o - D o w n l o a d e r -  
+#   Y o u t u b e - V i d e o - D o w n l o a d e r - 
+ 
  
