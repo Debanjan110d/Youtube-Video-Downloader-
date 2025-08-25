@@ -179,22 +179,22 @@ python cli.py
 
 **Basic video download:**
 ```bash
-python cli.py download "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+python cli.py download "https://www.youtube.com/watch?v=VIDEO_ID"
 ```
 
 **Download 720p video:**
 ```bash
-python cli.py download "https://www.youtube.com/watch?v=dQw4w9WgXcQ" --quality 720p
+python cli.py download "https://www.youtube.com/watch?v=VIDEO_ID" --quality 720p
 ```
 
 **Download audio only:**
 ```bash
-python cli.py download "https://www.youtube.com/watch?v=dQw4w9WgXcQ" --audio-only
+python cli.py download "https://www.youtube.com/watch?v=VIDEO_ID" --audio-only
 ```
 
 **Download to specific folder:**
 ```bash
-python cli.py download "https://www.youtube.com/watch?v=dQw4w9WgXcQ" --output "C:\My Videos"
+python cli.py download "https://www.youtube.com/watch?v=VIDEO_ID" --output "C:\My Videos"
 ```
 
 **Download playlist (first 10 videos):**
@@ -204,7 +204,7 @@ python cli.py download "https://www.youtube.com/playlist?list=PLAYLIST_ID" --pla
 
 **Get video information:**
 ```bash
-python cli.py info "https://www.youtube.com/watch?v=dQw4w9WgXcQ" --show-formats --show-description
+python cli.py info "https://www.youtube.com/watch?v=VIDEO_ID" --show-formats --show-description
 ```
 
 ## File Structure
