@@ -14,7 +14,7 @@ class YouTubeDownloaderGUI:
     
     def __init__(self):
         self.root = tk.Tk()
-        self.root.title("YouTube Video Downloader")
+        self.root.title("All Video Downloader (YouTube, Facebook, Instagram, X/Twitter)")
         self.root.geometry("800x600")
         self.root.minsize(600, 500)
         
@@ -59,54 +59,87 @@ class YouTubeDownloaderGUI:
                                font=("Arial", 16, "bold"))
         title_label.grid(row=0, column=0, columnspan=3, pady=(0, 20))
         
-        # URL input
-        ttk.Label(main_frame, text="YouTube URL:").grid(row=1, column=0, sticky=tk.W, pady=5)
-        url_entry = ttk.Entry(main_frame, textvariable=self.url_var, width=50)
-        url_entry.grid(row=1, column=1, sticky=(tk.W, tk.E), padx=5, pady=5)
-        
-        info_button = ttk.Button(main_frame, text="Get Info", command=self.get_video_info)
-        info_button.grid(row=1, column=2, padx=5, pady=5)
-        
-        # Download path
-        ttk.Label(main_frame, text="Download Path:").grid(row=2, column=0, sticky=tk.W, pady=5)
-        path_entry = ttk.Entry(main_frame, textvariable=self.download_path_var, width=50)
-        path_entry.grid(row=2, column=1, sticky=(tk.W, tk.E), padx=5, pady=5)
-        
-        browse_button = ttk.Button(main_frame, text="Browse", command=self.browse_download_path)
-        browse_button.grid(row=2, column=2, padx=5, pady=5)
-        
-        # Options frame
-        options_frame = ttk.LabelFrame(main_frame, text="Download Options", padding="10")
-        options_frame.grid(row=3, column=0, columnspan=3, sticky=(tk.W, tk.E), pady=10)
-        options_frame.columnconfigure(1, weight=1)
-        
-        # Quality selection
-        ttk.Label(options_frame, text="Quality:").grid(row=0, column=0, sticky=tk.W, pady=5)
-        self.quality_combo = ttk.Combobox(options_frame, textvariable=self.quality_var,
-                                         values=["best", "worst", "1080p", "720p", "480p", "360p", "240p"],
-                                         state="readonly", width=20)
-        self.quality_combo.grid(row=0, column=1, sticky=tk.W, padx=5, pady=5)
-        
-        # Audio only checkbox
-        audio_check = ttk.Checkbutton(options_frame, text="Audio Only (MP3)", 
-                                     variable=self.audio_only_var)
-        audio_check.grid(row=0, column=2, sticky=tk.W, padx=20, pady=5)
-        
-        # Video info display
-        info_frame = ttk.LabelFrame(main_frame, text="Video Information", padding="10")
-        info_frame.grid(row=4, column=0, columnspan=3, sticky=(tk.W, tk.E, tk.N, tk.S), pady=10)
-        info_frame.columnconfigure(0, weight=1)
-        info_frame.rowconfigure(0, weight=1)
-        
-        self.info_text = scrolledtext.ScrolledText(info_frame, height=8, width=60)
-        self.info_text.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
-        
-        # Progress frame
-        progress_frame = ttk.Frame(main_frame)
-        progress_frame.grid(row=5, column=0, columnspan=3, sticky=(tk.W, tk.E), pady=10)
-        progress_frame.columnconfigure(0, weight=1)
-        
-        # Progress bar
+    # Main container
+    main_frame = ttk.Frame(self.root, padding="10")
+    main_frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
+    self.root.columnconfigure(0, weight=1)
+    self.root.rowconfigure(0, weight=1)
+    main_frame.columnconfigure(1, weight=1)
+
+    # Title
+    title_label = ttk.Label(main_frame, text="All Video Downloader", font=("Arial", 16, "bold"))
+    title_label.grid(row=0, column=0, columnspan=3, pady=(0, 20))
+
+    # URL input
+    ttk.Label(main_frame, text="Video URL (YouTube, Facebook, Instagram, X/Twitter):").grid(row=1, column=0, sticky=tk.W, pady=5)
+    url_entry = ttk.Entry(main_frame, textvariable=self.url_var, width=60)
+    url_entry.grid(row=1, column=1, sticky=(tk.W, tk.E), padx=5, pady=5)
+    info_button = ttk.Button(main_frame, text="Get Info", command=self.get_video_info)
+    info_button.grid(row=1, column=2, padx=5, pady=5)
+
+    # Download path
+    ttk.Label(main_frame, text="Download Path:").grid(row=2, column=0, sticky=tk.W, pady=5)
+    path_entry = ttk.Entry(main_frame, textvariable=self.download_path_var, width=60)
+    path_entry.grid(row=2, column=1, sticky=(tk.W, tk.E), padx=5, pady=5)
+    browse_button = ttk.Button(main_frame, text="Browse", command=self.browse_download_path)
+    browse_button.grid(row=2, column=2, padx=5, pady=5)
+
+    # Options frame
+    options_frame = ttk.LabelFrame(main_frame, text="Download Options", padding="10")
+    options_frame.grid(row=3, column=0, columnspan=3, sticky=(tk.W, tk.E), pady=10)
+    options_frame.columnconfigure(1, weight=1)
+
+    # Quality selection
+    ttk.Label(options_frame, text="Quality:").grid(row=0, column=0, sticky=tk.W, pady=5)
+    self.quality_combo = ttk.Combobox(options_frame, textvariable=self.quality_var,
+                     values=["best", "worst", "1080p", "720p", "480p", "360p", "240p"],
+                     state="readonly", width=20)
+    self.quality_combo.grid(row=0, column=1, sticky=tk.W, padx=5, pady=5)
+
+    # Audio only checkbox
+    audio_check = ttk.Checkbutton(options_frame, text="Audio Only (MP3)", variable=self.audio_only_var)
+    audio_check.grid(row=0, column=2, sticky=tk.W, padx=20, pady=5)
+
+    # Video info display
+    info_frame = ttk.LabelFrame(main_frame, text="Video Information", padding="10")
+    info_frame.grid(row=4, column=0, columnspan=3, sticky=(tk.W, tk.E, tk.N, tk.S), pady=10)
+    info_frame.columnconfigure(0, weight=1)
+    info_frame.rowconfigure(0, weight=1)
+    self.info_text = scrolledtext.ScrolledText(info_frame, height=8, width=70)
+    self.info_text.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
+
+    # Progress frame
+    progress_frame = ttk.Frame(main_frame)
+    progress_frame.grid(row=5, column=0, columnspan=3, sticky=(tk.W, tk.E), pady=10)
+    progress_frame.columnconfigure(0, weight=1)
+
+    # Progress bar
+    self.progress_bar = ttk.Progressbar(progress_frame, variable=self.progress_var, maximum=100, length=500)
+    self.progress_bar.grid(row=0, column=0, sticky=(tk.W, tk.E), pady=5)
+
+    # Status label
+    self.status_label = ttk.Label(progress_frame, textvariable=self.status_var)
+    self.status_label.grid(row=1, column=0, pady=5)
+
+    # Buttons frame
+    buttons_frame = ttk.Frame(main_frame)
+    buttons_frame.grid(row=6, column=0, columnspan=3, pady=20)
+    self.download_button = ttk.Button(buttons_frame, text="Download Video", command=self.download_video, style="Accent.TButton")
+    self.download_button.grid(row=0, column=0, padx=5)
+    self.playlist_button = ttk.Button(buttons_frame, text="Download Playlist", command=self.download_playlist)
+    self.playlist_button.grid(row=0, column=1, padx=5)
+    clear_button = ttk.Button(buttons_frame, text="Clear", command=self.clear_fields)
+    clear_button.grid(row=0, column=2, padx=5)
+    main_frame.rowconfigure(4, weight=1)
+    self.progress_bar.grid(row=0, column=0, sticky=(tk.W, tk.E), pady=5)
+
+    # Status label
+    self.status_label = ttk.Label(progress_frame, textvariable=self.status_var)
+    self.status_label.grid(row=1, column=0, pady=5)
+
+    # Buttons frame
+    buttons_frame = ttk.Frame(main_frame)
+    buttons_frame.grid(row=6, column=0, columnspan=3, pady=20)
         self.progress_bar = ttk.Progressbar(progress_frame, variable=self.progress_var,
                                            maximum=100, length=400)
         self.progress_bar.grid(row=0, column=0, sticky=(tk.W, tk.E), pady=5)
@@ -146,7 +179,7 @@ class YouTubeDownloaderGUI:
         """Get and display video information."""
         url = self.url_var.get().strip()
         if not url:
-            messagebox.showerror("Error", "Please enter a YouTube URL")
+            messagebox.showerror("Error", "Please enter a video URL (YouTube, Facebook, Instagram, X/Twitter)")
             return
             
         def fetch_info():
@@ -207,7 +240,7 @@ Available Formats:
         """Download the video."""
         url = self.url_var.get().strip()
         if not url:
-            messagebox.showerror("Error", "Please enter a YouTube URL")
+            messagebox.showerror("Error", "Please enter a video URL (YouTube, Facebook, Instagram, X/Twitter)")
             return
             
         # Update download path
@@ -242,7 +275,7 @@ Available Formats:
         """Download playlist."""
         url = self.url_var.get().strip()
         if not url:
-            messagebox.showerror("Error", "Please enter a YouTube playlist URL")
+            messagebox.showerror("Error", "Please enter a playlist URL (YouTube, Facebook, Instagram, X/Twitter)")
             return
             
         # Ask for max downloads
