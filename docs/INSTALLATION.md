@@ -25,3 +25,6 @@
    ```
 
 See [USAGE.md](USAGE.md) for more details.
+
+---
+**Author: Debanjan Dutta**

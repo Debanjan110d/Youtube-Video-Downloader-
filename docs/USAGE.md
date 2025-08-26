@@ -19,3 +19,6 @@
 - Download video or playlist
 
 See [FEATURES.md](FEATURES.md) for more.
+
+---
+**Author: Debanjan Dutta**

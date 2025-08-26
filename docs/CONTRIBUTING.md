@@ -7,3 +7,6 @@ Contributions are welcome! Please:
 - Add documentation for new features
 
 See [LICENSE.md](LICENSE.md) for license info.
+
+---
+**Author: Debanjan Dutta**

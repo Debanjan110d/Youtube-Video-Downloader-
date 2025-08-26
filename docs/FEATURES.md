@@ -10,3 +10,6 @@
 - Standalone EXE build (Windows)
 
 See [SUPPORTED_PLATFORMS.md](SUPPORTED_PLATFORMS.md) for details.
+
+---
+**Author: Debanjan Dutta**

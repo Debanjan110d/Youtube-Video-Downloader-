@@ -1,5 +1,9 @@
 # Troubleshooting
 
+---
+**Author: Debanjan Dutta**
+---
+
 ## Common Issues
 - **Python not found:** Ensure Python is installed and added to PATH.
 - **yt-dlp errors:** Update yt-dlp with `pip install -U yt-dlp`.
