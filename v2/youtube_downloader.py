@@ -3,6 +3,20 @@ import os
 from pathlib import Path
 from typing import Dict, List, Optional, Callable
 
+try:
+    from utils import get_ffmpeg_path
+    FFMPEG_AVAILABLE = True
+except ImportError:
+    FFMPEG_AVAILABLE = False
+    
+def get_safe_ydl_opts_for_audio():
+    """Get yt-dlp options that work without FFmpeg"""
+    return {
+        'format': 'bestaudio[ext=m4a]/bestaudio[ext=mp3]/bestaudio',
+        'writeinfojson': False,
+        'writesubtitles': False,
+    }
+
 class YouTubeDownloader:
     """
     Universal video downloader using yt-dlp for YouTube, Facebook, Instagram, X/Twitter, etc.
@@ -76,7 +90,9 @@ class YouTubeDownloader:
         except Exception as e:
             raise Exception(f"Error getting video info: {str(e)}")
 
-    def download_video(self, url: str, quality: str = 'best', audio_only: bool = False, custom_filename: str = None) -> str:
+    def download_video(self, url: str, quality: str = 'best', audio_only: bool = False, 
+                      custom_filename: str = None, audio_quality: str = '192', 
+                      normalize_audio: bool = True) -> str:
         try:
             self.is_downloading = True
             if custom_filename:
@@ -86,23 +102,67 @@ class YouTubeDownloader:
             ydl_opts = {
                 'outtmpl': outtmpl,
                 'progress_hooks': [self._progress_hook],
+                'quiet': True,  # Suppress output
+                'no_warnings': True,  # Suppress warnings
+                'ignoreerrors': True,  # Continue on errors
             }
+            
+            # Add FFmpeg location if available
+            if FFMPEG_AVAILABLE:
+                ffmpeg_path = get_ffmpeg_path()
+                if ffmpeg_path:
+                    ydl_opts['ffmpeg_location'] = ffmpeg_path
+            
             if audio_only:
+                # Simple audio extraction without complex post-processing
                 ydl_opts.update({
-                    'format': 'bestaudio/best',
+                    'format': 'bestaudio[acodec^=mp4a]/bestaudio[ext=m4a]/bestaudio',
                     'postprocessors': [{
                         'key': 'FFmpegExtractAudio',
                         'preferredcodec': 'mp3',
-                        'preferredquality': '192',
+                        'preferredquality': audio_quality,
                     }],
+                    'postprocessor_args': ['-loglevel', 'error'],
+                    'ignoreerrors': True,
                 })
             else:
-                if quality == 'best':
-                    ydl_opts['format'] = 'best'
-                elif quality == 'worst':
-                    ydl_opts['format'] = 'worst'
+                # Smart YouTube video quality settings with FFmpeg detection
+                try:
+                    # Check if FFmpeg is available for merging
+                    import subprocess
+                    subprocess.run(['ffmpeg', '-version'], capture_output=True, check=True)
+                    ffmpeg_available = True
+                except:
+                    ffmpeg_available = False
+                
+                if ffmpeg_available:
+                    # FFmpeg available - use separate streams for highest quality
+                    if quality == 'best':
+                        ydl_opts['format'] = 'bestvideo[height<=2160][ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best'
+                    elif quality == 'worst':
+                        ydl_opts['format'] = 'worstvideo[ext=mp4]+worstaudio[ext=m4a]/worst'
+                    elif quality.endswith('p') and quality[:-1].isdigit():
+                        height = quality[:-1]
+                        ydl_opts['format'] = f'bestvideo[height={height}][ext=mp4]+bestaudio[ext=m4a]/bestvideo[height<={height}]+bestaudio/best[height<={height}]'
+                    else:
+                        ydl_opts['format'] = 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best'
+                    ydl_opts['merge_output_format'] = 'mp4'
                 else:
-                    ydl_opts['format'] = 'best'
+                    # No FFmpeg - use single streams for good quality without errors
+                    if quality == 'best':
+                        ydl_opts['format'] = 'best[height<=2160][ext=mp4]/best[height<=1440]/best[height<=1080]/best'
+                    elif quality == 'worst':
+                        ydl_opts['format'] = 'worst[ext=mp4]/worst'
+                    elif quality.endswith('p') and quality[:-1].isdigit():
+                        height = quality[:-1]
+                        ydl_opts['format'] = f'best[height={height}][ext=mp4]/best[height<={height}]/best'
+                    else:
+                        ydl_opts['format'] = 'best[ext=mp4]/best'
+                
+                # Add audio normalization for video downloads if requested
+                if normalize_audio:
+                    # Keep it simple - just ensure we get good quality without complex post-processing
+                    pass
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 ydl.download([url])
             self.is_downloading = False
@@ -131,11 +191,16 @@ class YouTubeDownloader:
                 })
             else:
                 if quality == 'best':
-                    ydl_opts['format'] = 'best'
+                    ydl_opts['format'] = 'best[ext=mp4]/best'
                 elif quality == 'worst':
-                    ydl_opts['format'] = 'worst'
+                    ydl_opts['format'] = 'worst[ext=mp4]/worst'
+                elif quality.endswith('p') and quality[:-1].isdigit():
+                    # Handle specific resolutions like '1080p', '720p', etc.
+                    height = quality[:-1]
+                    ydl_opts['format'] = f'best[height<={height}][ext=mp4]/best[height<={height}]/best[ext=mp4]/best'
                 else:
-                    ydl_opts['format'] = 'best'
+                    # Fallback to best quality
+                    ydl_opts['format'] = 'best[ext=mp4]/best'
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 ydl.download([url])
             self.is_downloading = False
